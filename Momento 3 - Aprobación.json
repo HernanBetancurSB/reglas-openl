@@ -1,0 +1,169 @@
+{
+  "name": "Momento 3 - Aprobación",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "e0617494-797d-4792-9c1b-9c6317c57064",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -480,
+        -128
+      ],
+      "id": "1f6133e0-76e1-4fb2-8ae1-a77ff255d59b",
+      "name": "Webhook",
+      "webhookId": "e0617494-797d-4792-9c1b-9c6317c57064"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        208,
+        -128
+      ],
+      "id": "dcedc51e-b2bc-41e3-a8db-97217f82a330",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "owner": {
+          "__rl": true,
+          "value": "HernanBetancurSB",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "reglas-openl",
+          "mode": "name"
+        },
+        "filePath": "=reglas/archivo_{{ $now }}.xlsx",
+        "fileContent": "={{ $json.body }}",
+        "commitMessage": "Aprobado"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        -128,
+        -128
+      ],
+      "id": "85455239-aec5-4f71-8f97-dafbd8a8fd08",
+      "name": "Create a file",
+      "webhookId": "124549b2-2787-447f-bccc-543e944d9227",
+      "credentials": {
+        "githubApi": {
+          "id": "uRkQsQO8B5UKBUp6",
+          "name": "GitHub account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Carga de Archivo Aprobado GitHub\nItem 1:Requerido para disponibilizar el archivo de la regla en github",
+        "height": 240,
+        "width": 1120,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -624,
+        -208
+      ],
+      "id": "bbdc987e-bce9-43b0-9631-c7b74be20770",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "segurobolivar-trial.app.n8n.cloud",
+            "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
+            "content-length": "18430",
+            "accept": "*/*",
+            "accept-encoding": "gzip, br",
+            "accept-language": "es-CO,es;q=0.9,en-CO;q=0.8,en;q=0.7,es-419;q=0.6",
+            "cdn-loop": "cloudflare; loops=1; subreqs=1",
+            "cf-connecting-ip": "181.237.83.92",
+            "cf-ew-via": "15",
+            "cf-ipcountry": "CO",
+            "cf-ray": "96479f57140b31e3-MIA",
+            "cf-visitor": "{\"scheme\":\"https\"}",
+            "cf-worker": "n8n.cloud",
+            "content-disposition": "attachment; filename=\"tabla_decision.xlsx\"",
+            "content-type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "origin": "http://localhost:8080",
+            "priority": "u=1, i",
+            "referer": "http://localhost:8080/",
+            "sec-ch-ua": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": "\"macOS\"",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "cross-site",
+            "x-forwarded-for": "181.237.83.92, 172.70.54.144",
+            "x-forwarded-host": "segurobolivar-trial.app.n8n.cloud",
+            "x-forwarded-port": "443",
+            "x-forwarded-proto": "https",
+            "x-forwarded-server": "traefik-prod-users-gwc-81-6b7d5f4f4f-x7t4p",
+            "x-is-trusted": "yes",
+            "x-real-ip": "181.237.83.92",
+            "x-session-id": "153da068-52ff-4cfa-8bde-7d0000813619",
+            "x-user-id": "81d97ac0-1d8a-425d-9663-9f9a29b4c179"
+          },
+          "params": {},
+          "query": {},
+          "body": {},
+          "webhookUrl": "https://segurobolivar-trial.app.n8n.cloud/webhook/e0617494-797d-4792-9c1b-9c6317c57064",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Create a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a file": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "08dc439b-bd36-4f28-acb1-81e6af676148",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1a8f90e8f70e67024b7aab9c2b578e521fdff9f6dc3445fee7260379a4e65592"
+  },
+  "id": "hApHyHYm4osVIwUM",
+  "tags": []
+}

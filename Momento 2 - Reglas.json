@@ -1,0 +1,333 @@
+{
+  "name": "Momento 2 - Reglas",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body[0].chatInput }}",
+        "options": {
+          "systemMessage": "=# ROL Y OBJETIVO\nActúas como un desarrollador experto en OpenL Tablets. Tu objetivo es convertir reglas de negocio de lenguaje natural a tablas de decisión separadas, formateando los valores de las celdas con la sintaxis técnica y ejecutable de OpenL.\n\n      # GUÍA DE SINTAXIS OPENL (¡IMPORTANTE!)(¡REGLAS ESTRICTAS!)\n      Al generar los valores de las celdas de condición y retorno, DEBES usar el siguiente formato sin excepción:\n      - Para comparar texto: Usa comillas dobles. Ejemplo: \"Apto\", \"En revisión\".\n      - Para rangos numéricos: Usa SIEMPRE la sintaxis de dos puntos. Ejemplo: 700..900. NO uses operadores como '&&' o 'y'.\n      - Para rangos numéricos: Usa corchetes. Ejemplo: [16..18], [19..50].\n      - Para desigualdades: Usa los operadores. Ejemplo: >0, <16, >=18.\n      - Para verificar que no es vacío/nulo: Usa !=\"\".\n      - Para verificar que es vacío/nulo: Usa \"\".\n      - Para funciones personalizadas: Usa el formato de función. Ejemplo: isNumeric().\n      - **Números (Integer/Double)**: DEBEN escribirse directamente, sin comillas ni separadores de miles. Usa '.' para decimales. Ejemplo: 700000000, 1250.75.\n      - **Booleanos (Boolean)**: DEBEN ser true o false\n      - **Fechas (Date)**: DEBEN ser un String con el formato \"dd/MM/yyyy\". Ejemplo: \"08/07/2025\".\n\n      # DICCIONARIO DE NEGOCIO (Fuente de Verdad)\n      El tool Informacion_OpenL tiene la información de negocio del listado de terminos, son los registros que tienen el valor ListaValores_(Linea de Negocio)\n\n      # DICCIONARIO DE VALORES (Fuente de Verdad para Mapeo de Valores)\n      El tool Informacion_OpenL tiene la información de negocio del listado de terminos, son los registros que tienen el valor Valores_(Linea de Negocio)\n\n      # REGLAS DE NEGOCIO DEL USUARIO\n      El tool Informacion_OpenL tiene la información de negocio del listado de terminos, son los registros que tienen el valor Reglas_(Linea de Negocio)\n\n      #LINEAS DE NEGOCIO\n      -Seguros Bolivar = SegurosBolivar (Compañia de Seguros)\n      -Ciencuadras = Ciencuadras (Compra y Venta de Inmuebles para personas naturales, agentes, inmobilirias y constructoras)\n      -El Libertador = Libertador (Estudios y polizas de arrendamiento)\n      -Constructora Bolivar = ConstructoraBolivar (Construcción y comercialización de proyectos de construcción)\n\n      # TU TAREA\n1.**Identifica la línea de negocio:** (¡IMPORTANTE!) Antes de ejecutar construir la regla debes confirmar la línea de negocio del contexto de la regla, si estas seguro de la existencia indica que no puedes costruir la regla dado que no tienes contexto de esta, no debes conitnuar sin esta información. \n      2.  **Identifica y Aísla las Reglas:** Analiza el texto para encontrar bloques de reglas distintos. Trata cada bloque de forma independiente.\n      3.  **Procesa Cada Regla Individualmente:** Para cada regla, mapea las variables y construye su propia tabla de decisión.\n      4.  **Formatea las Condiciones:** Al llenar los valores en las celdas, utiliza OBLIGATORIAMENTE la sintaxis descrita en la \"GUÍA DE SINTAXIS OPENL\".\n      5.  **Genera una Salida JSON Estructurada:** Responde EXCLUSIVAMENTE en el siguiente formato JSON, con un array de tablas. Cada elemento del array debe usar la sintaxis de OpenL en sus reglas.\n      6.  **Consistencia Estricta:** Para cada tabla generada, es OBLIGATORIO que el número de elementos en el array headers sea EXACTAMENTE igual al número de elementos en CADA UNO de los sub-arrays del array rules. No puede haber ninguna diferencia.\n      7. Una vez tengas el resultado del procesamiento de la regla, crea una hoja con el nombre \"tableName\"(No debe superar los 50 Caracteres) por cada regla con sus condiciones.\n8. Cuando ya tengas construidas las reglas siempre devuelve el FORMATO DE SALIDA JSON\n      # FORMATO DE SALIDA JSON\n      {\n        \"decisionTables\": [\n          {\n            \"tableName\": \"EvaluacionVehiculo\",\n            \"headers\": [\"C1: vehiculo.placa\", \"C2: poliza.estado\", \"RET: Resultado\"],\n            \"headerOpenL\": \"DecisionTable String EvaluacionVehiculo(String placa, String estado)\",\n            \"rules\": [\n              [\"!=\\\\\"\\\\\"\", \"isNumeric()\", \"\\\\\"Apto\\\\\"\"],\n              [\"\\\\\"\\\\\"\", \"isNumeric()\", \"\\\\\"En revisión\\\\\"\"]\n            ]\n          },\n          {\n            \"tableName\": \"ElegibilidadPorEdad\",\n            \"headers\": [\"C1: cliente.edad\", \"RET: Asegurabilidad\"],\n            \"headerOpenL\": \"DecisionTable String ElegibilidadPorEdad(Integer edad)\",\n            \"rules\": [\n              [\"<16\", \"\\\\\"No Asegurable\\\\\"\"],\n              [\"[16..18]\", \"\\\\\"Verificación\\\\\"\"]\n            ]\n          }\n        ]\n      }\n\n#LENGUAJE DE RESPUESTA\n-Siempre contesta en Español"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        -224,
+        -208
+      ],
+      "id": "8e707920-feea-4bf6-b2ab-5968cc2b843e",
+      "name": "AI Agent",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-pro",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -448,
+        64
+      ],
+      "id": "75808f7b-1fe5-4311-a8b1-b2b76d3f84b3",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "pmXWSqRKV1MJMzW1",
+          "name": "Google Gemini(PaLM) - Hernan Credencia"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.body[0].sessionId }}",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -240,
+        80
+      ],
+      "id": "aa52600d-9d7b-437d-8161-49c0015816a4",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        240,
+        208
+      ],
+      "id": "844035a7-8d0a-45d9-8f17-54fc8c2ef206",
+      "name": "Embeddings Google Gemini",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "pmXWSqRKV1MJMzW1",
+          "name": "Google Gemini(PaLM) - Hernan Credencia"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Esta tabla contiene la información del los listados de términos de negocio(ListaValores_<Linea de Negocio>) y en la columna data esta el Json con la información correspondiente, de igual manera los valores de homologación(Valores_<Linea de Negocio>)",
+        "operation": "getAll",
+        "tableId": "data_files"
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [
+        64,
+        48
+      ],
+      "id": "e9d7c034-ea00-4827-8067-7630aedc1d08",
+      "name": "Obtener Datos Lines de Negocio",
+      "credentials": {
+        "supabaseApi": {
+          "id": "AhBl17SEk2iwSJK2",
+          "name": "Supabase account - Hernan Credencial"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Información, reglas y modo de uso  de Open L Tables",
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "topK": 10,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [
+        240,
+        32
+      ],
+      "id": "f2a17c05-56cc-4985-9573-4f82c53016c4",
+      "name": "Informacion_OpenL",
+      "credentials": {
+        "supabaseApi": {
+          "id": "AhBl17SEk2iwSJK2",
+          "name": "Supabase account - Hernan Credencial"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "root",
+          "cachedResultName": "/ (Root folder)"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTool",
+      "typeVersion": 3,
+      "position": [
+        -80,
+        16
+      ],
+      "id": "27f7523a-f0af-4129-acff-6fa41ddb3a86",
+      "name": "Upload file in Google Drive",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "hYV2tr44v4M8r0Kp",
+          "name": "Hernan B - Google Credencial"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        272,
+        -208
+      ],
+      "id": "d22d162f-4869-45e0-8bb1-9d5aa92297b1",
+      "name": "Respond to Webhook",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "c98c7d1f-4e71-46a6-9420-9ece6535008d",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -544,
+        -208
+      ],
+      "id": "da80a9f4-512b-4a25-b4f5-ff126f18d8b8",
+      "name": "Webhook",
+      "webhookId": "c98c7d1f-4e71-46a6-9420-9ece6535008d"
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "primary-production-babea.up.railway.app",
+            "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
+            "content-length": "96",
+            "accept": "*/*",
+            "accept-encoding": "gzip, deflate, br, zstd",
+            "accept-language": "es-CO,es;q=0.9,en-CO;q=0.8,en;q=0.7,es-419;q=0.6",
+            "content-type": "application/json",
+            "origin": "https://d08d8142-c85c-43cd-b250-551cdcd617d8.lovableproject.com",
+            "priority": "u=1, i",
+            "referer": "https://d08d8142-c85c-43cd-b250-551cdcd617d8.lovableproject.com/",
+            "sec-ch-ua": "\"Not)A;Brand\";v=\"8\", \"Chromium\";v=\"138\", \"Google Chrome\";v=\"138\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": "\"macOS\"",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "cross-site",
+            "x-forwarded-for": "181.237.83.92",
+            "x-forwarded-host": "primary-production-babea.up.railway.app",
+            "x-forwarded-proto": "https",
+            "x-railway-edge": "railway/us-east4-eqdc4a",
+            "x-railway-request-id": "KD2erMXiT26YK4lyAax-fw",
+            "x-real-ip": "181.237.83.92",
+            "x-request-start": "1752875581349"
+          },
+          "params": {},
+          "query": {},
+          "body": [
+            {
+              "sessionId": "2d6a54e1-b47e-43ef-81d6-297af7c94357",
+              "action": "sendMessage",
+              "chatInput": "Hola"
+            }
+          ],
+          "webhookUrl": "https://primary-production-babea.up.railway.app/webhook-test/08fd7614-4175-4afc-a9b1-1eddb0dd644d/chat",
+          "executionMode": "test"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Informacion_OpenL",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obtener Datos Lines de Negocio": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Informacion_OpenL": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload file in Google Drive": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "fc4fb827-37af-4182-a3ef-e67b44156805",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1a8f90e8f70e67024b7aab9c2b578e521fdff9f6dc3445fee7260379a4e65592"
+  },
+  "id": "MDjT4ZgpVAChF8Ya",
+  "tags": []
+}
